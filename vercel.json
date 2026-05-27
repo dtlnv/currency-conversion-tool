@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/currency-api/:path*",
+      "destination": "https://api.currencybeacon.com/v1/:path*"
+    }
+  ]
+}
