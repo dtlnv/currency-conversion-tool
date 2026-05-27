@@ -11,4 +11,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      "/currency-api": {
+        target: "https://api.currencybeacon.com/v1",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/currency-api/, ""),
+      },
+    },
+  },
 })

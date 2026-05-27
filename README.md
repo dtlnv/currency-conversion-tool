@@ -1,21 +1,39 @@
-# React + TypeScript + Vite + shadcn/ui
+# Currency Converter Tool
 
-This is a template for a new Vite project with React, TypeScript, and shadcn/ui.
+This is a simple currency converter tool.
 
-## Adding components
+Technologies used:
+- React with TypeScript
+- Vite for bundling
+- Tailwind CSS (Shadcn/ui) for styling
 
-To add components to your app, run the following command:
+## Project Requirements
 
-```bash
-npx shadcn@latest add button
-```
+### Currency Selection:
+1. Provide two select boxes for users to choose a currency to convert from and to.
+2. Fetch a list of currencies from the https://api.currencybeacon.com/v1/currencies API.
+3. Populate the select boxes with the available options returned from the API.
 
-This will place the ui components in the `src/components` directory.
+### Currency Conversion:
+1. Allow users to input an amount for the “from” currency.
+2. Fetch the converted value from the https://api.currencybeacon.com/v1/convert API.
+3. Populate the “to” value based on the value returned from the API.
 
-## Using components
+## Running the Application
 
-To use the components in your app, import them as follows:
+- Clone the repository.
+- Install dependencies using `npm install`.
+- Provide your Currency Beacon API key in the `.env` file.
+- Start the development server using `npm run dev`.
+- Open `http://localhost:5174/` in your browser.
 
-```tsx
-import { Button } from "@/components/ui/button"
-```
+## Project Structure
+
+- `src/`
+    - `components/`: Contains reusable components of the application.
+        - `ui/`: Contains Shadcn/ui shared UI components.
+    - `hooks/`: Contains custom React hooks.
+    - `lib/`: Contains configs and type definitions.
+    - `App.tsx`: The main application component.
+    - `index.tsx`: The entry point of the application.
+    - `index.css`: Global styles for the application (includes Shadcn/ui configuration).
