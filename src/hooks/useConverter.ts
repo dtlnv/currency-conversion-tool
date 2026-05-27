@@ -4,7 +4,7 @@ import type { ConversionResponse } from "@/lib/types";
 import { CURRENCY_BEACON_API_KEY } from "@/lib/config";
 
 interface UseConverterProps {
-  amountFrom: string;
+  amountFrom: string; // AmountFrom is string because it's bound to an input field.
   currencyFrom: string;
   currencyTo: string;
 }

@@ -1,5 +1,7 @@
 # Currency Converter Tool
 
+Demo: https://currency-conversion-tool-dt.vercel.app/
+
 This is a simple currency converter tool.
 
 Technologies used:
@@ -27,6 +29,9 @@ Technologies used:
 - Start the development server using `npm run dev`.
 - Open `http://localhost:5174/` in your browser.
 
+## Testing
+- To run tests, run `npm run test`.
+
 ## Project Structure
 
 - `src/`
@@ -34,6 +39,15 @@ Technologies used:
         - `ui/`: Contains Shadcn/ui shared UI components.
     - `hooks/`: Contains custom React hooks.
     - `lib/`: Contains configs and type definitions.
+    - `tests/`: Test configuration.
     - `App.tsx`: The main application component.
     - `index.tsx`: The entry point of the application.
     - `index.css`: Global styles for the application (includes Shadcn/ui configuration).
+
+## Notes and assumptions
+- API key is stored in an environment variable and accessed via `import.meta.env.VITE_CURRENCY_BEACON_API_KEY`.
+- The UI is kept simple and functional, focusing on the core requirements of currency selection and conversion.
+- Error handling is implemented to display any issues that arise during API calls.
+- Default currencies: USD (from) and EUR (to).
+- Default amount: 1000 in the "from" currency.
+- To avoid overengineering, I didn't use React Queries or any state management library, as the application is simple enough to manage state with React's built-in hooks.
