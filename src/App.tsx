@@ -5,21 +5,18 @@ import { Button } from "./components/ui/button";
 import { ArrowDownUp, LoaderCircle } from "lucide-react";
 import { useConverter, useCurrencies } from "./hooks";
 
-type Direction = "from" | "to";
-
 export function App() {
   const [currencyFrom, setCurrencyFrom] = useState<string>(DEFAULT_CURRENCY_FROM);
   const [currencyTo, setCurrencyTo] = useState<string>(DEFAULT_CURRENCY_TO);
   const [amountFrom, setAmountFrom] = useState<string>("1000");
   const [amountTo, setAmountTo] = useState<string>("1000");
-  const [direction, setDirection] = useState<Direction>("from");
+  const [direction, setDirection] = useState<"from" | "to">("from");
 
-  const { currencies, loading: currenciesLoading, error: currenciesError } = useCurrencies();
+  const currenciesState = useCurrencies();
   const { amountTo: convertedAmount, loading: conversionLoading, error: conversionError } = useConverter({
     amountFrom: direction === "from" ? amountFrom : amountTo,
     currencyFrom: direction === "from" ? currencyFrom : currencyTo,
     currencyTo: direction === "from" ? currencyTo : currencyFrom,
-
   });
 
   const onAmountFromChange = (value: string) => {
@@ -46,7 +43,7 @@ export function App() {
     : String(convertedAmount ?? "");
 
 
-  if (currenciesLoading) {
+  if (currenciesState.status === 'loading') {
     return (
       <div className="flex min-h-svh items-center justify-center gap-4 p-6">
         <LoaderCircle className="animate-spin" /> Loading currencies...
@@ -54,11 +51,11 @@ export function App() {
     )
   }
 
-  if (currenciesError) {
+  if (currenciesState.status === 'error') {
     return (
       <div className="flex min-h-svh items-center justify-center p-6">
         <div className="text-red-500">
-          Error loading currencies: {currenciesError.message || "Unknown error"}
+          Error loading currencies: {currenciesState.error.message || "Unknown error"}
         </div>
       </div>
     )
@@ -75,7 +72,7 @@ export function App() {
               label={`Amount`}
               value={displayFrom.toString()}
               onChange={onAmountFromChange}
-              currencies={currencies}
+              currencies={currenciesState.status === 'success' ? currenciesState.data : []}
               currency={currencyFrom}
               onCurrencyChange={setCurrencyFrom}
               loading={direction === "to" && conversionLoading}
@@ -87,7 +84,7 @@ export function App() {
               label={`Converted to`}
               value={displayTo.toString()}
               onChange={onAmountToChange}
-              currencies={currencies}
+              currencies={currenciesState.status === 'success' ? currenciesState.data : []}
               currency={currencyTo}
               onCurrencyChange={setCurrencyTo}
               loading={direction === "from" && conversionLoading}
