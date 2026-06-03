@@ -5,25 +5,46 @@ import { Button } from "./components/ui/button";
 import { ArrowDownUp, LoaderCircle } from "lucide-react";
 import { useConverter, useCurrencies } from "./hooks";
 
+type Direction = "from" | "to";
+
 export function App() {
   const [currencyFrom, setCurrencyFrom] = useState<string>(DEFAULT_CURRENCY_FROM);
   const [currencyTo, setCurrencyTo] = useState<string>(DEFAULT_CURRENCY_TO);
   const [amountFrom, setAmountFrom] = useState<string>("1000");
+  const [amountTo, setAmountTo] = useState<string>("1000");
+  const [direction, setDirection] = useState<Direction>("from");
+
   const { currencies, loading: currenciesLoading, error: currenciesError } = useCurrencies();
-  const { amountTo, loading: conversionLoading, error: conversionError } = useConverter({ amountFrom, currencyFrom, currencyTo });
+  const { amountTo: convertedAmount, loading: conversionLoading, error: conversionError } = useConverter({
+    amountFrom: direction === "from" ? amountFrom : amountTo,
+    currencyFrom: direction === "from" ? currencyFrom : currencyTo,
+    currencyTo: direction === "from" ? currencyTo : currencyFrom,
+
+  });
 
   const onAmountFromChange = (value: string) => {
-    if (value !== "" && isNaN(Number(value))) {
-      return; // Prevent non-numeric input
-    }
-
+    setDirection('from');
     setAmountFrom(value);
   };
+
+  const onAmountToChange = (value: string) => {
+    setDirection('to');
+    setAmountTo(value);
+  }
 
   const onSwapCurrencies = () => {
     setCurrencyFrom(currencyTo);
     setCurrencyTo(currencyFrom);
   };
+
+  const displayFrom = direction === "from"
+    ? amountFrom
+    : String(convertedAmount ?? "");
+
+  const displayTo = direction === "to"
+    ? amountTo
+    : String(convertedAmount ?? "");
+
 
   if (currenciesLoading) {
     return (
@@ -52,23 +73,24 @@ export function App() {
           <div className="flex min-w-[300px] flex-col gap-4">
             <CurrencyInputField
               label={`Amount`}
-              value={amountFrom.toString()}
+              value={displayFrom.toString()}
               onChange={onAmountFromChange}
               currencies={currencies}
               currency={currencyFrom}
               onCurrencyChange={setCurrencyFrom}
+              loading={direction === "to" && conversionLoading}
             />
             <Button className="self-center" onClick={onSwapCurrencies} disabled={conversionLoading}>
               <ArrowDownUp />
             </Button>
             <CurrencyInputField
               label={`Converted to`}
-              value={amountTo != null ? String(amountTo) : ""}
+              value={displayTo.toString()}
+              onChange={onAmountToChange}
               currencies={currencies}
               currency={currencyTo}
               onCurrencyChange={setCurrencyTo}
-              disabled
-              loading={conversionLoading}
+              loading={direction === "from" && conversionLoading}
             />
 
             {conversionError && (

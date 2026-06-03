@@ -36,6 +36,8 @@ export function CurrencyInputField({
                     value={value}
                     onChange={(e) => onChange?.(e.target.value)}
                     disabled={disabled || loading}
+                    type="number"
+                    aria-label={label}
                 />
                 <CurrencySelect
                     currencies={currencies}

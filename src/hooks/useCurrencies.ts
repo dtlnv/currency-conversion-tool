@@ -1,4 +1,4 @@
-import { CURRENCY_BEACON_API_KEY } from "@/lib/config";
+import { currencyApi } from "@/lib/currency-api";
 import type { CurrenciesResponse, Currency } from "@/lib/types";
 import { useEffect, useState } from "react";
 
@@ -12,15 +12,16 @@ export function useCurrencies() {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    fetch(`/currency-api/currencies?api_key=${CURRENCY_BEACON_API_KEY}`)
-      .then((res) => {
+    const run = async () => {
+      try {
+        const res = await currencyApi(`/currencies`);
+
         if (!res.ok) {
           throw new Error(res.statusText);
         }
 
-        return res.json();
-      })
-      .then((data) =>
+        const data = await res.json();
+
         setCurrencies(
           data.response.map((c: CurrenciesResponse) => ({
             id: c.id,
@@ -28,9 +29,14 @@ export function useCurrencies() {
             name: c.name,
           }))
         )
-      )
-      .catch(setError)
-      .finally(() => setLoading(false))
+      } catch (e) {
+        setError(e instanceof Error ? e : new Error(String(e)));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    run();
   }, []);
 
   return { currencies, loading, error };
