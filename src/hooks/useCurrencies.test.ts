@@ -22,10 +22,9 @@ afterEach(() => {
 it('returns mapped currencies', async () => {
     const { result } = renderHook(() => useCurrencies());
 
-    await waitFor(() => expect(result.current.loading).toBe(false));
+    await waitFor(() => expect(result.current.status).toBe("success"));
 
-    expect(result.current.currencies).toEqual(mockCurrenciesResponse.map(c => ({ id: c.id, code: c.short_code, name: c.name })));
-    expect(result.current.error).toBeNull();
+    expect(result.current.status === 'success' && result.current.data).toEqual(mockCurrenciesResponse.map(c => ({ id: c.id, code: c.short_code, name: c.name })));
 });
 
 it('returns error if API fails', async () => {
@@ -36,8 +35,7 @@ it('returns error if API fails', async () => {
 
     const { result } = renderHook(() => useCurrencies());
 
-    await waitFor(() => expect(result.current.loading).toBe(false));
+    await waitFor(() => expect(result.current.status).toBe("error"));
 
-    expect(result.current.error).toBeInstanceOf(Error);
-    expect(result.current.currencies).toEqual([]);
+    expect(result.current.status === 'error' && result.current.error).toBeInstanceOf(Error);
 });
