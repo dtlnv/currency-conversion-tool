@@ -4,6 +4,7 @@ import { DEFAULT_CURRENCY_FROM, DEFAULT_CURRENCY_TO } from "./lib/config";
 import { Button } from "./components/ui/button";
 import { ArrowDownUp, LoaderCircle } from "lucide-react";
 import { useConverter, useCurrencies } from "./hooks";
+import { LatestHistory } from "./components/latest-history";
 
 export function App() {
   const [currencyFrom, setCurrencyFrom] = useState<string>(DEFAULT_CURRENCY_FROM);
@@ -13,7 +14,7 @@ export function App() {
   const [direction, setDirection] = useState<"from" | "to">("from");
 
   const currenciesState = useCurrencies();
-  const { amountTo: convertedAmount, loading: conversionLoading, error: conversionError } = useConverter({
+  const { amountTo: convertedAmount, loading: conversionLoading, error: conversionError, history } = useConverter({
     amountFrom: direction === "from" ? amountFrom : amountTo,
     currencyFrom: direction === "from" ? currencyFrom : currencyTo,
     currencyTo: direction === "from" ? currencyTo : currencyFrom,
@@ -99,6 +100,8 @@ export function App() {
             )}
           </div>
         </div>
+
+        <LatestHistory history={history} />
       </div>
     </div>
   )

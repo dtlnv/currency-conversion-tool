@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDebounce } from "./useDebounce";
-import type { ConversionResponse } from "@/lib/types";
+import type { ConversionResponse, History } from "@/lib/types";
 import { currencyApi } from "@/lib/currency-api";
+import { MAX_HISTORY_CAPACITY } from "@/lib/config";
 
 interface UseConverterProps {
   amountFrom: string; // AmountFrom is string because it's bound to an input field.
@@ -22,6 +23,7 @@ export function useConverter({
   const [amountTo, setAmountTo] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [fetchError, setFetchError] = useState<Error | null>(null);
+  const [history, setHistory] = useState<History[]>([]);
 
   const parsedAmount = Number(amountFrom);
   const debouncedAmount = useDebounce(parsedAmount);
@@ -48,7 +50,21 @@ export function useConverter({
         }
 
         const data: ConversionResponse = await res.json();
-        setAmountTo(parseFloat(data.value.toFixed(2)));
+        const amountTo = parseFloat(data.value.toFixed(2));
+        setAmountTo(amountTo);
+
+        setHistory((prev: History[]) => {
+          return [
+            {
+              currencyFrom,
+              currencyTo,
+              amountFrom: String(debouncedAmount),
+              amountTo: String(amountTo),
+            },
+            ...prev
+          ].slice(0, MAX_HISTORY_CAPACITY);
+        });
+
       } catch (e) {
         if (e instanceof Error && e.name === "AbortError") {
           return;
@@ -70,5 +86,6 @@ export function useConverter({
     loading,
     error: negativeError ?? fetchError,
     amountTo: shouldSkipConversion ? 0 : amountTo,
+    history,
   };
 }

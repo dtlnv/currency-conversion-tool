@@ -25,3 +25,10 @@ export interface CurrenciesResponse {
     decimal_mark: string;
     thousands_separator: string;
 }
+
+export type History = {
+    currencyFrom: string;
+    currencyTo: string;
+    amountFrom: string;
+    amountTo: string;
+}
