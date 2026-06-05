@@ -56,6 +56,7 @@ export function useConverter({
         setHistory((prev: History[]) => {
           return [
             {
+              id: crypto.randomUUID(),
               currencyFrom,
               currencyTo,
               amountFrom: String(debouncedAmount),
@@ -87,5 +88,8 @@ export function useConverter({
     error: negativeError ?? fetchError,
     amountTo: shouldSkipConversion ? 0 : amountTo,
     history,
+    onClearHistory: () => {
+      setHistory([]);
+    }
   };
 }

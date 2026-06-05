@@ -14,7 +14,7 @@ export function App() {
   const [direction, setDirection] = useState<"from" | "to">("from");
 
   const currenciesState = useCurrencies();
-  const { amountTo: convertedAmount, loading: conversionLoading, error: conversionError, history } = useConverter({
+  const { amountTo: convertedAmount, loading: conversionLoading, error: conversionError, history, onClearHistory } = useConverter({
     amountFrom: direction === "from" ? amountFrom : amountTo,
     currencyFrom: direction === "from" ? currencyFrom : currencyTo,
     currencyTo: direction === "from" ? currencyTo : currencyFrom,
@@ -64,7 +64,7 @@ export function App() {
 
   return (
     <div className="flex min-h-svh items-center justify-center p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
+      <div className="flex max-w-md min-w-0 flex-col gap-4">
         <div>
           <h1 className="mb-10 text-2xl font-bold">Currency Converter - {currencyFrom} to {currencyTo}</h1>
 
@@ -101,7 +101,10 @@ export function App() {
           </div>
         </div>
 
-        <LatestHistory history={history} />
+        <div>
+          <LatestHistory history={history} />
+          {history.length > 0 ? <Button variant="destructive" onClick={onClearHistory}>Clear history</Button> : null}
+        </div>
       </div>
     </div>
   )

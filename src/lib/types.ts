@@ -27,6 +27,7 @@ export interface CurrenciesResponse {
 }
 
 export type History = {
+    id: string;
     currencyFrom: string;
     currencyTo: string;
     amountFrom: string;
